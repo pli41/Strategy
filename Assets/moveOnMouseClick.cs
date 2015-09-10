@@ -25,12 +25,21 @@ public class moveOnMouseClick : MonoBehaviour {
 	private Transform myTransform;				// this transform
 	private Vector3 destinationPosition;		// The destination Point
 	private float destinationDistance;			// The distance between myTransform and destinationPosition
-	
-	public float moveSpeed = 0.5f;						// The Speed the character will move
-	
+	private MinionSystem minionSys;
+
+	public bool selected;
+	public float moveSpeed;					// The Speed the character will move
+	public float moveSpeed_val;
 	
 	
 	void Start () {
+		minionSys = GetComponent<MinionSystem> ();
+		minionSys.init ();
+
+		moveSpeed = minionSys.minion.speed;
+		moveSpeed_val = moveSpeed;
+
+		Debug.Log (moveSpeed);
 		myTransform = transform;							// sets myTransform to this GameObject.transform
 		destinationPosition = myTransform.position;			// prevents myTransform reset
 	}
@@ -40,11 +49,11 @@ public class moveOnMouseClick : MonoBehaviour {
 		// keep track of the distance between this gameObject and destinationPosition
 		destinationDistance = Vector3.Distance(destinationPosition, myTransform.position);
 		
-		if(destinationDistance < .01f){		// To prevent shakin behavior when near destination
+		if(destinationDistance < .001f){		// To prevent shakin behavior when near destination
 			moveSpeed = 0;
 		}
 		else if(destinationDistance > .5f){			// To Reset Speed to default
-			moveSpeed = 0.5f;
+			moveSpeed = moveSpeed_val;
 		}
 		
 		
@@ -80,8 +89,17 @@ public class moveOnMouseClick : MonoBehaviour {
 		}
 		
 		// To prevent code from running if not needed
-		if(destinationDistance > .01f){
+		if(destinationDistance > .001f){
 			myTransform.position = Vector3.MoveTowards(myTransform.position, destinationPosition, moveSpeed * Time.deltaTime);
 		}
 	}
+
+
+	void OnMouseDrag(){
+		if(selected){
+
+
+		}
+	}
+
 }
