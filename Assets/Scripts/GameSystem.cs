@@ -3,6 +3,8 @@ using System.Collections;
 
 public class GameSystem : MonoBehaviour {
 
+	public GameObject selectedMinion;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -21,9 +23,22 @@ public class GameSystem : MonoBehaviour {
 			if(Physics.Raycast( ray, out hit)){
 				GameObject hitObject = hit.transform.gameObject;
 				if(hitObject.tag == "Minion"){
-					moveOnMouseClick move = hitObject.GetComponent<moveOnMouseClick>();
-					move.selected = true;
-					highlightSelected(hitObject);
+					if(selectedMinion == null){
+						moveOnMouseClick move = hitObject.GetComponent<moveOnMouseClick>();
+						move.selected = true;
+						selectedMinion = hitObject;
+						highlightSelected(selectedMinion);
+					}
+					else {
+						if(!selectedMinion.Equals(hitObject) ){
+							Debug.Log("clicked on another minion");
+							unHighlightAll();
+							selectedMinion.GetComponent<moveOnMouseClick> ().selected = false;
+							selectedMinion = hitObject;
+							selectedMinion.GetComponent<moveOnMouseClick>().selected = true;
+							highlightSelected(selectedMinion);
+						}
+					}
 				}
 			}
 		}
@@ -32,7 +47,8 @@ public class GameSystem : MonoBehaviour {
 			for(int i=0; i< minions.Length; i++){
 				minions[i].GetComponent<moveOnMouseClick>().selected = false;
 			}
-			unHighlightAll(minions);
+			selectedMinion = null;
+			unHighlightAll();
 		}
 	}
 	
@@ -42,8 +58,8 @@ public class GameSystem : MonoBehaviour {
 		mat.color = Color.white;
 	}
 	
-	void unHighlightAll(GameObject[] minions){
-
+	void unHighlightAll(){
+		GameObject[] minions = GameObject.FindGameObjectsWithTag("Minion");
 		for(int i=0; i< minions.Length; i++){
 			MeshRenderer mr = minions[i].GetComponent<MeshRenderer> ();
 			MinionSystem ms = minions[i].GetComponent<MinionSystem> ();

@@ -71,7 +71,6 @@ public class moveOnMouseClick : MonoBehaviour {
 						myTransform.rotation = targetRotation;
 					}
 				}
-
 			}
 
 		}
